@@ -1,0 +1,64 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Read the generated dataset
+df = pd.read_csv('scaps_humidity_integrated_data.csv')
+
+def create_analysis_plots(df):
+    """Create comprehensive visualization plots for the dataset"""
+    
+    # Plot 1: Temperature vs PCE with humidity color mapping
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(df['Temperature_C'], df['PCE'], 
+                         c=df['Relative_Humidity'], cmap='viridis', alpha=0.7)
+    colorbar = plt.colorbar(scatter)
+    colorbar.set_label('Relative Humidity (%)', fontsize=24, fontweight='bold')
+    plt.xlabel('Temperature (°C)', fontsize=24, fontweight='bold')
+    plt.ylabel('PCE (%)', fontsize=24, fontweight='bold')
+    plt.tick_params(axis='both', which='major', labelsize=20, labelweight='bold')
+    plt.show()
+    
+    # Plot 2: Humidity vs PCE
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(df['Relative_Humidity'], df['PCE'], 
+                         c=df['Temperature_C'], cmap='plasma', alpha=0.7)
+    colorbar = plt.colorbar(scatter)
+    colorbar.set_label('Temperature (°C)', fontsize=24, fontweight='bold')
+    plt.xlabel('Relative Humidity (%)', fontsize=24, fontweight='bold')
+    plt.ylabel('PCE (%)', fontsize=24, fontweight='bold')
+    plt.tick_params(axis='both', which='major', labelsize=20, labelweight='bold')
+    plt.show()
+    
+    # Plot 3: Exposure Time vs PCE
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(df['Exposure_Time'], df['PCE'], 
+                         c=df['Relative_Humidity'], cmap='viridis', alpha=0.7)
+    colorbar = plt.colorbar(scatter)
+    colorbar.set_label('Relative Humidity (%)', fontsize=24, fontweight='bold')
+    plt.xlabel('Exposure Time (hours)', fontsize=24, fontweight='bold')
+    plt.ylabel('PCE (%)', fontsize=24, fontweight='bold')
+    plt.tick_params(axis='both', which='major', labelsize=20, labelweight='bold')
+    plt.show()
+    
+    # Plot 4: Parameter Correlations
+    plt.figure(figsize=(10, 6))
+    params = ['PCE', 'Jsc', 'FF', 'Voc']
+    correlation_matrix = df[params].corr()
+    sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0, annot_kws={'size': 18, 'weight': 'bold'})
+    plt.tick_params(axis='both', which='major', labelsize=20, labelweight='bold')
+    plt.show()
+
+# Display summary statistics
+print("Dataset Summary Statistics:")
+print(df.describe())
+
+# Create and show the plots
+create_analysis_plots(df)
+
+# Additional statistical information
+print("\nCorrelations with PCE:")
+correlations = df[['PCE', 'Temperature_C', 'Relative_Humidity', 'Exposure_Time', 
+                   'Jsc', 'FF', 'Voc']].corr()['PCE'].sort_values(ascending=False)
+print(correlations)
